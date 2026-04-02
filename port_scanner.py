@@ -1,8 +1,28 @@
 import socket
 
-popularPorts = [21, 22, 25, 53, 80, 443];
+commonPorts = {
+	20: "FTP-data",
+	21: "FTP-control",
+	22: "SSH",
+	23: "Telnet",
+	25: "SMTP",
+	53: "DNS",
+	80: "HTTP",
+	110: "POP3",
+	143: "IMAP",
+	443: "HTTPS",
+	465: "SMTPS",
+	1433: "MSSQL",
+	3306: "MYSQL",
+	3389: "RDP",
+	5432: "PostgreSQL",
+	5900: "VNC",
+	6379: "Redis",
+	8080: "HTTP-Proxy",
+	8443: "HTTPS-Alt"
+};
 
-def searchPorts(ports, verbose):
+def searchPorts(ports):
 	for port in ports:
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 		sock.settimeout(0.1);
@@ -10,29 +30,22 @@ def searchPorts(ports, verbose):
 		res = sock.connect_ex((ipAddress, port));
 
 		if res == 0:
-			print(f"Port {port} is open.");
-
-		if res != 0 and verbose == "y":
-			print(f"Port {port} is closed.");
+			print(f"Port {port if port not in commonPorts else f'{str(port)} ({commonPorts[port]})'} is open.");
 
 ipAddress = input("IP address to scan: ");
-verbose = input("Enable verbose mode y/n: ").lower();
 
 while True:
-	mode = int(input("Scan mode - 1 (Popular ports) or 2 (Custom) or 3 (All ports): "));
+	mode = int(input("Scan mode - 1 (Common ports) or 2 (Custom): "));
 
 	match mode:
 		case 1:
-			searchPorts(popularPorts, verbose);
+			searchPorts(commonPorts.keys());
 			break;
 		case 2:
 			customPorts = input("Enter ports separated by , : ").split(",");
 			customPorts = map(int, customPorts);
-			searchPorts(customPorts, verbose);
-			break;
-		case 3:
-			searchPorts(range(1, 1024), verbose);
+			searchPorts(customPorts);
 			break;
 		case _:
-			print("Invalid selection");
+			print("Invalid selection. Try again.");
 			continue;
