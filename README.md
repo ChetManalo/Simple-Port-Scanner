@@ -3,6 +3,11 @@ This is a simple port scanner I made after relearning the basics of Python and s
 
 ## Changelog
 
+### 4/3/26
+
+- Common ports are now read from a CSV file.
+- Added IP address validation specifically for IPv4 addresses.
+
 ### 4/2/26
 
 - Renamed popular ports to common ports (Sounds better to me)
